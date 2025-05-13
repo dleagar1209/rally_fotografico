@@ -19,6 +19,8 @@ class _SignUpState extends State<SignUp> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  bool _isAdmin = false;
+
   String? _validateName(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Requerido';
@@ -56,6 +58,7 @@ class _SignUpState extends State<SignUp> {
         final String name = _nameController.text.trim();
         final String email = _emailController.text.trim();
         final String password = _passwordController.text.trim();
+        final String rol = _isAdmin ? 'administrador' : 'participante';
 
         UserCredential userCredential = await _auth
             .createUserWithEmailAndPassword(email: email, password: password);
@@ -65,6 +68,7 @@ class _SignUpState extends State<SignUp> {
           'id': userId,
           'nombre': name,
           'email': email,
+          'rol': rol,
           'fechaCreacion': FieldValue.serverTimestamp(),
         });
 
@@ -145,6 +149,20 @@ class _SignUpState extends State<SignUp> {
                     ),
                     obscureText: true,
                     validator: _validatePassword,
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _isAdmin,
+                        onChanged: (bool? newValue) {
+                          setState(() {
+                            _isAdmin = newValue ?? false;
+                          });
+                        },
+                      ),
+                      const Text('Administrador'),
+                    ],
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(

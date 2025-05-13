@@ -9,5 +9,5 @@ class Rally extends StatelessWidget {
       appBar: AppBar(title: Text('Rally Fotográfico')),
       body: Center(child: Text('Bienvenido al Rally Fotográfico')),
     );
-  }
+  } 
 }
