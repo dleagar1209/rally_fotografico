@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Home extends StatelessWidget {
-  const Home({Key? key}) : super(key: key);
+  const Home({super.key});
 
   void _navigateToLogin(BuildContext context) {
     Navigator.pushNamed(context, '/login');
