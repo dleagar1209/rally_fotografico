@@ -41,7 +41,7 @@ class _LoginState extends State<Login> {
           email: email,
           password: password,
         );
-        Navigator.pushNamed(context, '/main'); // Cambio aquí
+        Navigator.pushNamed(context, '/rally'); // Cambio aquí
         showDialog(
           context: context,
           builder: (context) {

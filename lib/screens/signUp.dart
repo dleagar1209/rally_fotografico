@@ -77,7 +77,7 @@ class _SignUpState extends State<SignUp> {
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.pushNamed(context, '/home');
+                      Navigator.pushNamed(context, '/rally');
                     },
                     child: const Text('OK'),
                   ),

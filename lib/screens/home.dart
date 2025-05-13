@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'login.dart';
+import 'signUp.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
 
   void _navigateToLogin(BuildContext context) {
-    Navigator.pushNamed(context, '/login');
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => const Login()));
   }
 
   void _navigateToSignUp(BuildContext context) {
-    Navigator.pushNamed(context, '/signup');
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => const SignUp()));
   }
 
   @override
@@ -28,8 +34,8 @@ class Home extends StatelessWidget {
               ),
               const SizedBox(height: 15),
               const Text(
-                'RallyFotografico es una aplicación que te permite participar en concursos de fotografía, '
-                'compartir tus imágenes y competir con otros usuarios. ¡Únete y muestra tu talento!',
+                'Inicia sesión y empieza a subir imagenes, las imagenes serán puntuadas por otros usuarios, '
+                '¡Únete y empieza a subir imagenes!',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16, color: Colors.black54),
               ),

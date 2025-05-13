@@ -25,7 +25,7 @@ class MainApp extends StatelessWidget {
             if (user == null) {
               return const Home();
             } else {
-              return const Rally(); // <-- puedes hacerlo const
+              return const Rally();
             }
           }
           return const Scaffold(
