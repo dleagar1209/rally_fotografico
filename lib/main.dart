@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart'; // <-- nuevo
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'screens/home.dart';
 import 'screens/rally.dart';
+import 'screens/options.dart';
+
+// Notificador global para el modo oscuro
+ValueNotifier<bool> darkModeNotifier = ValueNotifier(false);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(); // <-- inicializas Firebase
+  await Firebase.initializeApp();
   runApp(const MainApp());
 }
 
@@ -15,27 +19,36 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'RallyFotografico',
-      home: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
-            final user = snapshot.data;
-            if (user == null) {
-              return const Home();
-            } else {
-              return const Rally();
-            }
-          }
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        },
-      ),
-      routes: {
-        '/home': (context) => const Home(),
-        '/rally': (context) => const Rally(),
+    return ValueListenableBuilder<bool>(
+      valueListenable: darkModeNotifier,
+      builder: (context, isDarkMode, _) {
+        return MaterialApp(
+          title: 'RallyFotografico',
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark(),
+          themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+          home: StreamBuilder<User?>(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.active) {
+                final user = snapshot.data;
+                if (user == null) {
+                  return const Home();
+                } else {
+                  return const Rally();
+                }
+              }
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
+            },
+          ),
+          routes: {
+            '/home': (context) => const Home(),
+            '/rally': (context) => const Rally(),
+            '/options': (context) => const Options(),
+          },
+        );
       },
     );
   }
