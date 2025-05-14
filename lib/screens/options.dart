@@ -25,7 +25,7 @@ class _OptionsState extends State<Options> {
     _loadUserData();
   }
 
-  // Carga la información del usuario desde Firestore
+  // Carga la información del usuario desde Firestore, incluyendo el modo oscuro
   Future<void> _loadUserData() async {
     User? currentUser = _auth.currentUser;
     if (currentUser != null) {
@@ -36,6 +36,9 @@ class _OptionsState extends State<Options> {
           _userName = doc.get('nombre') ?? "";
           String rol = doc.get('rol') ?? "participante";
           _isAdmin = rol == 'administrador';
+          _isDarkMode = doc.get('oscuro') ?? false;
+          // Actualiza el ValueNotifier global con el valor obtenido
+          darkModeNotifier.value = _isDarkMode;
           _loading = false;
         });
       }
@@ -66,6 +69,16 @@ class _OptionsState extends State<Options> {
       });
       setState(() {
         _userName = newName;
+      });
+    }
+  }
+
+  // Actualiza el atributo "oscuro" en Firestore según el modo
+  Future<void> _updateUserMode(bool darkMode) async {
+    User? currentUser = _auth.currentUser;
+    if (currentUser != null) {
+      await _firestore.collection('users').doc(currentUser.uid).update({
+        'oscuro': darkMode,
       });
     }
   }
@@ -128,7 +141,7 @@ class _OptionsState extends State<Options> {
               ),
             ),
             const Divider(),
-            // Opción para activar el modo oscuro
+            // Opción para activar/desactivar modo oscuro mediante switch
             ListTile(
               title: const Text('Modo Oscuro'),
               trailing: Switch(
@@ -137,8 +150,9 @@ class _OptionsState extends State<Options> {
                   setState(() {
                     _isDarkMode = value;
                   });
-                  // Actualiza el ValueNotifier global para que toda la app cambie de tema
+                  // Actualiza el ValueNotifier global y Firebase
                   darkModeNotifier.value = value;
+                  _updateUserMode(value);
                 },
               ),
             ),

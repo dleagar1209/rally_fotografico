@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'screens/home.dart';
 import 'screens/rally.dart';
 import 'screens/options.dart';
@@ -11,6 +12,22 @@ ValueNotifier<bool> darkModeNotifier = ValueNotifier(false);
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  // Obtiene el usuario actual y, si existe, carga el atributo "oscuro" de Firestore
+  User? user = FirebaseAuth.instance.currentUser;
+  if (user != null) {
+    DocumentSnapshot doc =
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+    bool oscuro = false;
+    if (doc.exists) {
+      oscuro = doc.get('oscuro') ?? false;
+    }
+    darkModeNotifier.value = oscuro;
+  }
+
   runApp(const MainApp());
 }
 

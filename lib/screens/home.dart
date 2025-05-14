@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'login.dart';
 import 'signUp.dart';
+import '../main.dart'; // Asegúrate de importar el notifier
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -20,6 +21,26 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        actions: [
+          ValueListenableBuilder<bool>(
+            valueListenable: darkModeNotifier,
+            builder: (_, isDarkMode, __) {
+              return IconButton(
+                icon: Icon(
+                  isDarkMode ? Icons.nights_stay : Icons.wb_sunny,
+                  color: isDarkMode ? Colors.yellowAccent : Colors.orange,
+                ),
+                onPressed: () {
+                  darkModeNotifier.value = !isDarkMode;
+                },
+              );
+            },
+          ),
+        ],
+      ),
       backgroundColor: const Color(0xFFF2F2F2),
       body: Center(
         child: Padding(
@@ -34,8 +55,8 @@ class Home extends StatelessWidget {
               ),
               const SizedBox(height: 15),
               const Text(
-                'Inicia sesión y empieza a subir imagenes, las imagenes serán puntuadas por otros usuarios, '
-                '¡Únete y empieza a subir imagenes!',
+                'Inicia sesión y empieza a subir imágenes, las imágenes serán puntuadas por otros usuarios. '
+                '¡Únete y empieza a subir imágenes!',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16, color: Colors.black54),
               ),
@@ -45,7 +66,7 @@ class Home extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () => _navigateToLogin(context),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF1E90FF), // color azul
+                    backgroundColor: const Color(0xFF1E90FF),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
@@ -63,7 +84,7 @@ class Home extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () => _navigateToSignUp(context),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF32CD32), // color verde
+                    backgroundColor: const Color(0xFF32CD32),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
