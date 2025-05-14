@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../main.dart'; // Asegúrate de importar main.dart para acceder a darkModeNotifier
+import 'home.dart'; // Se utiliza para redirigir a Home en caso de cierre exitoso
 
 class Options extends StatefulWidget {
   const Options({Key? key}) : super(key: key);
@@ -120,6 +121,36 @@ class _OptionsState extends State<Options> {
     );
   }
 
+  // Función para cerrar sesión
+  Future<void> _signOut() async {
+    try {
+      await _auth.signOut();
+      // Al cerrar sesión con éxito, se redirige a Home
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const Home()),
+        (route) => false,
+      );
+    } catch (error) {
+      // En caso de error, se muestra un diálogo
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Error al cerrar sesión'),
+            content: Text(error.toString()),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading) {
@@ -170,6 +201,18 @@ class _OptionsState extends State<Options> {
                     await _updateUserRole(_isAdmin);
                   }
                 },
+              ),
+            ),
+            const Divider(),
+            // Opción para cerrar sesión
+            ListTile(
+              title: const Text(
+                'Cerrar sesión',
+                style: TextStyle(color: Colors.red),
+              ),
+              trailing: IconButton(
+                icon: const Icon(Icons.exit_to_app, color: Colors.red),
+                onPressed: _signOut,
               ),
             ),
           ],
