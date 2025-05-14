@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../main.dart'; // Para acceder a darkModeNotifier
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -69,6 +70,9 @@ class _SignUpState extends State<SignUp> {
           'nombre': name,
           'email': email,
           'rol': rol,
+          'oscuro':
+              darkModeNotifier
+                  .value, // Se almacena el estado actual del modo oscuro
           'fechaCreacion': FieldValue.serverTimestamp(),
         });
 
