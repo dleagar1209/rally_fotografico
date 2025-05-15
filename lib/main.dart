@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'screens/home.dart';
 import 'screens/rally.dart';
 import 'screens/options.dart';
+import 'screens/users.dart';
 
 // Notificador global para el modo oscuro
 ValueNotifier<bool> darkModeNotifier = ValueNotifier(false);
@@ -64,6 +65,7 @@ class MainApp extends StatelessWidget {
             '/home': (context) => const Home(),
             '/rally': (context) => const Rally(),
             '/options': (context) => const Options(),
+            "/users": (context) => const Users(),
           },
         );
       },
