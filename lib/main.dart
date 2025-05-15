@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rally_fotografico/screens/imagenes.dart';
 import 'screens/home.dart';
 import 'screens/rally.dart';
 import 'screens/options.dart';
@@ -66,6 +67,7 @@ class MainApp extends StatelessWidget {
             '/rally': (context) => const Rally(),
             '/options': (context) => const Options(),
             "/users": (context) => const Users(),
+            "/imagenes": (context) => const Imagenes(),
           },
         );
       },

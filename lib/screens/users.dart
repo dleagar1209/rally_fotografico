@@ -10,8 +10,12 @@ class Users extends StatelessWidget {
     return "${date.day}/${date.month}/${date.year}";
   }
 
-  void _navigateToImages(BuildContext context) {
+  void _navigateToRally(BuildContext context) {
     Navigator.pushNamed(context, '/rally');
+  }
+
+  void _navigateToImagenes(BuildContext context) {
+    Navigator.pushNamed(context, '/imagenes');
   }
 
   @override
@@ -66,12 +70,18 @@ class Users extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.image), label: 'Imágenes'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.photo),
+            label: 'Tus Imágenes',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Usuarios'),
         ],
-        currentIndex: 1,
+        currentIndex: 2,
         onTap: (index) {
           if (index == 0) {
-            _navigateToImages(context);
+            _navigateToRally(context);
+          } else if (index == 1) {
+            _navigateToImagenes(context);
           }
         },
       ),

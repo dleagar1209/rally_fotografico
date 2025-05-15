@@ -13,6 +13,10 @@ class Rally extends StatelessWidget {
     Navigator.pushNamed(context, '/users');
   }
 
+  void _navigateToImagenes(BuildContext context) {
+    Navigator.pushNamed(context, '/imagenes');
+  }
+
   Future<void> _showImageSourceActionSheet(BuildContext context) async {
     showModalBottomSheet(
       context: context,
@@ -57,7 +61,7 @@ class Rally extends StatelessWidget {
             'imagen': imageUrl,
             'usuario': user.uid,
             'fecha': Timestamp.now(),
-            'estado': 'por aprobar', // Nuevo atributo añadido
+            'estado': 'por aprobar', // Atributo añadido
           });
 
           ScaffoldMessenger.of(context).showSnackBar(
@@ -167,11 +171,17 @@ class Rally extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.image), label: 'Imágenes'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.photo),
+            label: 'Tus Imágenes',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Usuarios'),
         ],
         currentIndex: 0,
         onTap: (index) {
           if (index == 1) {
+            _navigateToImagenes(context);
+          } else if (index == 2) {
             _navigateToUsers(context);
           }
         },
