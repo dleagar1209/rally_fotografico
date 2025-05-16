@@ -162,16 +162,15 @@ class Rally extends StatelessWidget {
                 ),
                 child: GestureDetector(
                   onTap: () {
-                    if (imageUrl != null) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) =>
-                                  ImageDetailScreen(imageUrl: imageUrl),
-                        ),
-                      );
-                    }
+                    // Envía el id del documento a ImageDetailScreen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) =>
+                                ImageDetailScreen(documentId: docs[index].id),
+                      ),
+                    );
                   },
                   child:
                       imageUrl != null
