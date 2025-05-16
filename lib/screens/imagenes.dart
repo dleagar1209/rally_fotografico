@@ -35,8 +35,10 @@ class Imagenes extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 1,
+                          crossAxisCount:
+                              1, // Una sola columna para ocupar todo el ancho
+                          childAspectRatio:
+                              16 / 9, // Ajusta el aspecto según necesites
                           crossAxisSpacing: 8,
                           mainAxisSpacing: 8,
                         ),

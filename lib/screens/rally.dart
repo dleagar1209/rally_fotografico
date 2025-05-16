@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
+import 'imageDetail.dart'; // Importa la clase desde el otro fichero
 
 class Rally extends StatelessWidget {
   const Rally({Key? key}) : super(key: key);
@@ -25,7 +26,7 @@ class Rally extends StatelessWidget {
           child: Wrap(
             children: [
               ListTile(
-                leading: const Icon(Icons.camera_alt),
+                leading: const Icon(Icons.camera),
                 title: const Text('Tomar foto'),
                 onTap: () {
                   Navigator.pop(ctx);
@@ -136,8 +137,8 @@ class Rally extends StatelessWidget {
           return GridView.builder(
             padding: const EdgeInsets.all(8.0),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, // Dos columnas
-              childAspectRatio: 1,
+              crossAxisCount: 1, // Una sola columna para ocupar todo el ancho
+              childAspectRatio: 16 / 9, // Ajusta según necesites
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
             ),
@@ -145,7 +146,11 @@ class Rally extends StatelessWidget {
             itemBuilder: (context, index) {
               final data = docs[index].data() as Map<String, dynamic>;
               final imageUrl = data['imagen'];
-              final estado = data['estado'] ?? '';
+              String estado = data['estado'] ?? '';
+              // Capitaliza la primera letra del estado
+              if (estado.isNotEmpty) {
+                estado = estado[0].toUpperCase() + estado.substring(1);
+              }
               return GridTile(
                 footer: GridTileBar(
                   backgroundColor: Colors.black54,
@@ -155,27 +160,44 @@ class Rally extends StatelessWidget {
                     style: const TextStyle(fontSize: 12),
                   ),
                 ),
-                child:
-                    imageUrl != null
-                        ? Image.network(imageUrl, fit: BoxFit.cover)
-                        : const Icon(Icons.broken_image),
+                child: GestureDetector(
+                  onTap: () {
+                    if (imageUrl != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) =>
+                                  ImageDetailScreen(imageUrl: imageUrl),
+                        ),
+                      );
+                    }
+                  },
+                  child:
+                      imageUrl != null
+                          ? Image.network(imageUrl, fit: BoxFit.cover)
+                          : const Icon(Icons.broken_image),
+                ),
               );
             },
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add_a_photo),
+        child: const Icon(Icons.camera),
         onPressed: () => _showImageSourceActionSheet(context),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.image), label: 'Imágenes'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.photo),
+            icon: Icon(Icons.photo_album_outlined),
             label: 'Tus Imágenes',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Usuarios'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people_sharp),
+            label: 'Usuarios',
+          ),
         ],
         currentIndex: 0,
         onTap: (index) {
