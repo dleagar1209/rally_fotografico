@@ -151,6 +151,40 @@ class _OptionsState extends State<Options> {
     }
   }
 
+  // Función para eliminar la cuenta
+  Future<void> _deleteAccount() async {
+    User? currentUser = _auth.currentUser;
+    if (currentUser != null) {
+      // Eliminar todas las imágenes asociadas al usuario
+      QuerySnapshot imagesSnapshot =
+          await _firestore
+              .collection('imagenes')
+              .where('usuario', isEqualTo: currentUser.uid)
+              .get();
+      for (var doc in imagesSnapshot.docs) {
+        await doc.reference.delete();
+      }
+      // Eliminar el documento del usuario en Firestore
+      await _firestore.collection('users').doc(currentUser.uid).delete();
+
+      // Eliminar la cuenta del usuario en Firebase Authentication
+      try {
+        await currentUser.delete();
+      } catch (error) {
+        // Si se requiere reautenticación, se mostrará un error.
+        debugPrint("Error al eliminar la cuenta de Firebase Auth: $error");
+        // Se puede informar al usuario que es necesario reautenticarse antes de eliminar la cuenta.
+        return;
+      }
+      // Redirige a Home después de eliminar la cuenta
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const Home()),
+        (route) => false,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading) {
@@ -213,6 +247,47 @@ class _OptionsState extends State<Options> {
               trailing: IconButton(
                 icon: const Icon(Icons.exit_to_app, color: Colors.red),
                 onPressed: _signOut,
+              ),
+            ),
+            const Divider(),
+            // Nueva opción para eliminar cuenta
+            ListTile(
+              title: const Text(
+                'Eliminar cuenta',
+                style: TextStyle(color: Colors.red),
+              ),
+              trailing: IconButton(
+                icon: const Icon(Icons.delete_forever, color: Colors.red),
+                onPressed: () async {
+                  // Opcional: Confirmar acción con un diálogo
+                  bool? confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('Confirmar eliminación'),
+                        content: const Text(
+                          '¿Estás seguro de que deseas eliminar tu cuenta? Esta acción eliminará todas tus imágenes y datos.',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            child: const Text('Cancelar'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, true),
+                            child: const Text(
+                              'Eliminar',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  if (confirm == true) {
+                    await _deleteAccount();
+                  }
+                },
               ),
             ),
           ],
