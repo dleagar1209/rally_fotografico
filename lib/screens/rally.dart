@@ -105,108 +105,202 @@ class Rally extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Rally Fotográfico'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              Navigator.pushNamed(context, '/options');
-            },
+    final user = FirebaseAuth.instance.currentUser;
+
+    return FutureBuilder<DocumentSnapshot>(
+      future:
+          FirebaseFirestore.instance.collection('users').doc(user?.uid).get(),
+      builder: (context, userSnapshot) {
+        if (userSnapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+        if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
+          return const Scaffold(
+            body: Center(child: Text("No se pudo cargar el usuario")),
+          );
+        }
+
+        final userData = userSnapshot.data!.data() as Map<String, dynamic>;
+        final bool isAdmin = userData['rol'] == "administrador";
+
+        // Stream según el rol
+        final imagesStream =
+            isAdmin
+                ? FirebaseFirestore.instance
+                    .collection('imagenes')
+                    .where('estado', whereIn: ['aprobada', 'por aprobar'])
+                    .snapshots()
+                : FirebaseFirestore.instance
+                    .collection('imagenes')
+                    .where('estado', isEqualTo: 'aprobada')
+                    .snapshots();
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Rally Fotográfico'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/options');
+                },
+              ),
+            ],
           ),
-        ],
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream:
-            FirebaseFirestore.instance
-                .collection('imagenes')
-                .orderBy('fecha', descending: true)
-                .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final docs = snapshot.data!.docs;
-          if (docs.isEmpty) {
-            return const Center(child: Text("No hay imágenes"));
-          }
-          return GridView.builder(
-            padding: const EdgeInsets.all(8.0),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 1, // Una sola columna para ocupar todo el ancho
-              childAspectRatio: 16 / 9, // Ajusta según necesites
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
-            ),
-            itemCount: docs.length,
-            itemBuilder: (context, index) {
-              final data = docs[index].data() as Map<String, dynamic>;
-              final imageUrl = data['imagen'];
-              String estado = data['estado'] ?? '';
-              // Capitaliza la primera letra del estado
-              if (estado.isNotEmpty) {
-                estado = estado[0].toUpperCase() + estado.substring(1);
+          body: StreamBuilder<QuerySnapshot>(
+            stream: imagesStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
               }
-              return GridTile(
-                footer: GridTileBar(
-                  backgroundColor: Colors.black54,
-                  title: Text(
-                    estado,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 12),
-                  ),
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              final docs = snapshot.data!.docs;
+              if (docs.isEmpty) {
+                return const Center(child: Text("No hay imágenes"));
+              }
+              return GridView.builder(
+                padding: const EdgeInsets.all(8.0),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1,
+                  childAspectRatio: 16 / 9,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
                 ),
-                child: GestureDetector(
-                  onTap: () {
-                    // Envía el id del documento a ImageDetailScreen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) =>
-                                ImageDetailScreen(documentId: docs[index].id),
+                itemCount: docs.length,
+                itemBuilder: (context, index) {
+                  final data = docs[index].data() as Map<String, dynamic>;
+                  final imageUrl = data['imagen'];
+                  String estado = data['estado'] ?? '';
+                  if (estado.isNotEmpty) {
+                    estado = estado[0].toUpperCase() + estado.substring(1);
+                  }
+                  return GridTile(
+                    footer: GridTileBar(
+                      backgroundColor: Colors.black54,
+                      title: Text(
+                        estado,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 12),
                       ),
-                    );
-                  },
-                  child:
-                      imageUrl != null
-                          ? Image.network(imageUrl, fit: BoxFit.cover)
-                          : const Icon(Icons.broken_image),
-                ),
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => ImageDetailScreen(
+                                  documentId: docs[index].id,
+                                ),
+                          ),
+                        );
+                      },
+                      onLongPress:
+                          isAdmin && (data['estado'] == 'por aprobar')
+                              ? () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(
+                                            Icons.thumb_up,
+                                            color: Colors.green,
+                                            size: 40,
+                                          ),
+                                          onPressed: () async {
+                                            await FirebaseFirestore.instance
+                                                .collection('imagenes')
+                                                .doc(docs[index].id)
+                                                .update({'estado': 'aprobada'});
+                                            Navigator.pop(context);
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                  'Imagen aprobada',
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(
+                                            Icons.thumb_down,
+                                            color: Colors.red,
+                                            size: 40,
+                                          ),
+                                          onPressed: () async {
+                                            await FirebaseFirestore.instance
+                                                .collection('imagenes')
+                                                .doc(docs[index].id)
+                                                .update({'estado': 'denegada'});
+                                            Navigator.pop(context);
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                  'Imagen denegada',
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              }
+                              : null,
+                      child:
+                          imageUrl != null
+                              ? Image.network(imageUrl, fit: BoxFit.cover)
+                              : const Icon(Icons.broken_image),
+                    ),
+                  );
+                },
               );
             },
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.camera),
-        onPressed: () => _showImageSourceActionSheet(context),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.image), label: 'Imágenes'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.photo_album_outlined),
-            label: 'Tus Imágenes',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people_sharp),
-            label: 'Usuarios',
+          floatingActionButton: FloatingActionButton(
+            child: const Icon(Icons.camera),
+            onPressed: () => _showImageSourceActionSheet(context),
           ),
-        ],
-        currentIndex: 0,
-        onTap: (index) {
-          if (index == 1) {
-            _navigateToImagenes(context);
-          } else if (index == 2) {
-            _navigateToUsers(context);
-          }
-        },
-      ),
+          bottomNavigationBar: BottomNavigationBar(
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.image),
+                label: 'Imágenes',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.photo_album_outlined),
+                label: 'Tus Imágenes',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.people_sharp),
+                label: 'Usuarios',
+              ),
+            ],
+            currentIndex: 0,
+            onTap: (index) {
+              if (index == 1) {
+                _navigateToImagenes(context);
+              } else if (index == 2) {
+                _navigateToUsers(context);
+              }
+            },
+          ),
+        );
+      },
     );
   }
 }

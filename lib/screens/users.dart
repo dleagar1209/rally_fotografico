@@ -71,7 +71,7 @@ class Users extends StatelessWidget {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.image), label: 'Imágenes'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.photo),
+            icon: Icon(Icons.photo_album_outlined),
             label: 'Tus Imágenes',
           ),
           BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Usuarios'),
