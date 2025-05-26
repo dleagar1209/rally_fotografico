@@ -179,14 +179,17 @@ class Rally extends StatelessWidget {
                     estado = estado[0].toUpperCase() + estado.substring(1);
                   }
                   return GridTile(
-                    footer: GridTileBar(
-                      backgroundColor: Colors.black54,
-                      title: Text(
-                        estado,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                    ),
+                    footer:
+                        (data['estado'] != 'aprobada')
+                            ? GridTileBar(
+                              backgroundColor: Colors.black54,
+                              title: Text(
+                                estado,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                            )
+                            : null,
                     child: GestureDetector(
                       onTap: () {
                         Navigator.push(
