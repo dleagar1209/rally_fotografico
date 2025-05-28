@@ -20,8 +20,6 @@ class _SignUpState extends State<SignUp> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  bool _isAdmin = false;
-
   String? _validateName(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Requerido';
@@ -74,34 +72,41 @@ class _SignUpState extends State<SignUp> {
           'fechaCreacion': FieldValue.serverTimestamp(),
         });
 
+        // Incrementar NumeroUsuarios en el documento de la colección rally
+        await _firestore.collection('rally').doc('info').set({
+          'NumeroUsuarios': FieldValue.increment(1),
+        }, SetOptions(merge: true));
+
         showDialog(
           context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Usuario creado exitosamente'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, '/rally');
-                },
-                child: const Text('OK'),
+          builder:
+              (context) => AlertDialog(
+                title: const Text('Usuario creado exitosamente'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, '/rally');
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
               ),
-            ],
-          ),
         );
       } catch (error) {
         showDialog(
           context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Error'),
-            content: Text(error.toString()),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('OK'),
+          builder:
+              (context) => AlertDialog(
+                title: const Text('Error'),
+                content: Text(error.toString()),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('OK'),
+                  ),
+                ],
               ),
-            ],
-          ),
         );
       }
     }

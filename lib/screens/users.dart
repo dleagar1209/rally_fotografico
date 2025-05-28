@@ -243,6 +243,18 @@ class Users extends StatelessWidget {
                                                                 .doc(userId)
                                                                 .delete();
 
+                                                            // Decrementar número de usuarios en el documento info de la colección rally
+                                                            await FirebaseFirestore
+                                                                .instance
+                                                                .collection('rally')
+                                                                .doc('info')
+                                                                .set({
+                                                                  'NumeroUsuarios':
+                                                                      FieldValue
+                                                                          .increment(
+                                                                              -1),
+                                                                }, SetOptions(merge: true));
+
                                                             // Mostrar confirmación
                                                             Navigator.pop(
                                                               parentContext,

@@ -167,6 +167,11 @@ class _OptionsState extends State<Options> {
       // Eliminar el documento del usuario en Firestore
       await _firestore.collection('users').doc(currentUser.uid).delete();
 
+      // Decrementar NumeroUsuarios en la colección rally
+      await _firestore.collection('rally').doc('info').set({
+        'NumeroUsuarios': FieldValue.increment(-1),
+      }, SetOptions(merge: true));
+
       // Eliminar la cuenta del usuario en Firebase Authentication
       try {
         await currentUser.delete();
