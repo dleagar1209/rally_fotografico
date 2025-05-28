@@ -222,7 +222,7 @@ class _OptionsState extends State<Options> {
               ),
             ),
             const Divider(),
-            // Opción para cambiar el rol a administrador o participante
+            /* // Opción para cambiar el rol a administrador o participante
             ListTile(
               title: const Text('Usuario Administrador'),
               trailing: Checkbox(
@@ -237,7 +237,7 @@ class _OptionsState extends State<Options> {
                 },
               ),
             ),
-            const Divider(),
+            const Divider(), */
             // Opción para cerrar sesión
             ListTile(
               title: const Text(

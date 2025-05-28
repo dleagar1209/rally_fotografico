@@ -59,7 +59,7 @@ class _SignUpState extends State<SignUp> {
         final String name = _nameController.text.trim();
         final String email = _emailController.text.trim();
         final String password = _passwordController.text.trim();
-        final String rol = _isAdmin ? 'administrador' : 'participante';
+        final String rol = 'participante'; // Siempre participante
 
         UserCredential userCredential = await _auth
             .createUserWithEmailAndPassword(email: email, password: password);
@@ -70,42 +70,38 @@ class _SignUpState extends State<SignUp> {
           'nombre': name,
           'email': email,
           'rol': rol,
-          'oscuro':
-              darkModeNotifier
-                  .value, // Se almacena el estado actual del modo oscuro
+          'oscuro': darkModeNotifier.value,
           'fechaCreacion': FieldValue.serverTimestamp(),
         });
 
         showDialog(
           context: context,
-          builder:
-              (context) => AlertDialog(
-                title: const Text('Usuario creado exitosamente'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, '/rally');
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
+          builder: (context) => AlertDialog(
+            title: const Text('Usuario creado exitosamente'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/rally');
+                },
+                child: const Text('OK'),
               ),
+            ],
+          ),
         );
       } catch (error) {
         showDialog(
           context: context,
-          builder:
-              (context) => AlertDialog(
-                title: const Text('Error'),
-                content: Text(error.toString()),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('OK'),
-                  ),
-                ],
+          builder: (context) => AlertDialog(
+            title: const Text('Error'),
+            content: Text(error.toString()),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
               ),
+            ],
+          ),
         );
       }
     }
@@ -153,20 +149,6 @@ class _SignUpState extends State<SignUp> {
                     ),
                     obscureText: true,
                     validator: _validatePassword,
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: _isAdmin,
-                        onChanged: (bool? newValue) {
-                          setState(() {
-                            _isAdmin = newValue ?? false;
-                          });
-                        },
-                      ),
-                      const Text('Administrador'),
-                    ],
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(

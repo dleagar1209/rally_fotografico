@@ -123,7 +123,9 @@ class Rally extends StatelessWidget {
         }
 
         final userData = userSnapshot.data!.data() as Map<String, dynamic>;
-        final bool isAdmin = userData['rol'] == "administrador";
+        final bool isAdmin =
+            userData['rol'] == "administrador" ||
+            userData['rol'] == "administrador global";
 
         // Stream según el rol
         final imagesStream =
