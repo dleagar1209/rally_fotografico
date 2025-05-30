@@ -142,6 +142,14 @@ class _ImagenesState extends State<Imagenes> {
                                               .collection('imagenes')
                                               .doc(docId)
                                               .delete();
+                                          // Decrementar NumeroImagenes en la colección rally
+                                          await FirebaseFirestore.instance
+                                              .collection('rally')
+                                              .doc('info')
+                                              .set({
+                                                'numeroImagenes':
+                                                    FieldValue.increment(-1),
+                                              }, SetOptions(merge: true));
                                           if (!mounted) return;
                                           ScaffoldMessenger.of(
                                             scaffoldContext,

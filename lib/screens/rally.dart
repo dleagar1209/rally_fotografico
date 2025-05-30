@@ -65,6 +65,11 @@ class Rally extends StatelessWidget {
             'estado': 'por aprobar', // Atributo añadido
           });
 
+          // Incrementar numeroImagenes en el documento info de la colección rally
+          await FirebaseFirestore.instance.collection('rally').doc('info').set({
+            'numeroImagenes': FieldValue.increment(1),
+          }, SetOptions(merge: true));
+
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Imagen subida exitosamente')),
           );

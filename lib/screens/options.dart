@@ -50,17 +50,6 @@ class _OptionsState extends State<Options> {
     }
   }
 
-  // Actualiza el atributo "rol" del usuario en Firestore
-  Future<void> _updateUserRole(bool isAdmin) async {
-    User? currentUser = _auth.currentUser;
-    if (currentUser != null) {
-      String newRole = isAdmin ? 'administrador' : 'participante';
-      await _firestore.collection('users').doc(currentUser.uid).update({
-        'rol': newRole,
-      });
-    }
-  }
-
   // Actualiza el nombre del usuario en Firestore
   Future<void> _updateUserName(String newName) async {
     User? currentUser = _auth.currentUser;
@@ -161,6 +150,7 @@ class _OptionsState extends State<Options> {
               .collection('imagenes')
               .where('usuario', isEqualTo: currentUser.uid)
               .get();
+      int numImages = imagesSnapshot.docs.length;
       for (var doc in imagesSnapshot.docs) {
         await doc.reference.delete();
       }
@@ -171,14 +161,18 @@ class _OptionsState extends State<Options> {
       await _firestore.collection('rally').doc('info').set({
         'NumeroUsuarios': FieldValue.increment(-1),
       }, SetOptions(merge: true));
+      // Decrementar numeroImagenes en la colección rally según imágenes eliminadas
+      if (numImages > 0) {
+        await _firestore.collection('rally').doc('info').set({
+          'numeroImagenes': FieldValue.increment(-numImages),
+        }, SetOptions(merge: true));
+      }
 
       // Eliminar la cuenta del usuario en Firebase Authentication
       try {
         await currentUser.delete();
       } catch (error) {
-        // Si se requiere reautenticación, se mostrará un error.
         debugPrint("Error al eliminar la cuenta de Firebase Auth: $error");
-        // Se puede informar al usuario que es necesario reautenticarse antes de eliminar la cuenta.
         return;
       }
       // Redirige a Home después de eliminar la cuenta
