@@ -14,6 +14,8 @@ class _LoginState extends State<Login> {
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  bool _obscurePassword = true;
+
   String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) {
       return 'Requerido';
@@ -104,11 +106,23 @@ class _LoginState extends State<Login> {
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: _passwordController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Contraseña',
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+                    ),
                   ),
-                  obscureText: true,
+                  obscureText: _obscurePassword,
                   validator: _validatePassword,
                 ),
                 const SizedBox(height: 20),
