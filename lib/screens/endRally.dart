@@ -55,7 +55,8 @@ class EndRallyScreen extends StatelessWidget {
           }
           final top = snapshot.data!;
           return Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               if (top.isNotEmpty)
                 FutureBuilder<String>(
@@ -63,6 +64,7 @@ class EndRallyScreen extends StatelessWidget {
                   builder: (context, userSnap) {
                     final nombre = userSnap.data ?? '';
                     return Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         const SizedBox(height: 24),
                         if (top[0]['imagen'] != null)
@@ -85,28 +87,41 @@ class EndRallyScreen extends StatelessWidget {
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
                           ),
+                          textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'Nota media: ${top[0]['notaMedia']?.toStringAsFixed(2) ?? '-'}',
                           style: const TextStyle(fontSize: 16),
+                          textAlign: TextAlign.center,
                         ),
                       ],
                     );
                   },
                 ),
-              const Spacer(),
               if (top.length > 1)
                 FutureBuilder<String>(
                   future: _getUserName(top[1]['usuario']),
                   builder: (context, userSnap) {
                     final nombre = userSnap.data ?? '';
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: Text(
-                        '2º $nombre',
-                        style: const TextStyle(fontSize: 18),
-                      ),
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 12),
+                        Text(
+                          '2º $nombre',
+                          style: const TextStyle(fontSize: 18),
+                          textAlign: TextAlign.center,
+                        ),
+                        Text(
+                          'Nota media: ${top[1]['notaMedia']?.toStringAsFixed(2) ?? '-'}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     );
                   },
                 ),
@@ -115,24 +130,37 @@ class EndRallyScreen extends StatelessWidget {
                   future: _getUserName(top[2]['usuario']),
                   builder: (context, userSnap) {
                     final nombre = userSnap.data ?? '';
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 24.0, top: 4.0),
-                      child: Text(
-                        '3º $nombre',
-                        style: const TextStyle(fontSize: 18),
-                      ),
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 8),
+                        Text(
+                          '3º $nombre',
+                          style: const TextStyle(fontSize: 18),
+                          textAlign: TextAlign.center,
+                        ),
+                        Text(
+                          'Nota media: ${top[2]['notaMedia']?.toStringAsFixed(2) ?? '-'}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     );
                   },
                 ),
+              const SizedBox(height: 24),
             ],
           );
         },
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(left: 50.0, right: 50.0, bottom: 100.0),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
+            backgroundColor: const Color.fromARGB(255, 74, 74, 75),
             foregroundColor: Colors.white,
             minimumSize: const Size.fromHeight(48),
           ),
