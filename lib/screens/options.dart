@@ -16,9 +16,9 @@ class _OptionsState extends State<Options> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   bool _isDarkMode = darkModeNotifier.value;
-  bool _isAdmin = false;
   String _userName = "";
   bool _loading = true;
+  bool _isAdminGlobal = false;
 
   @override
   void initState() {
@@ -35,9 +35,8 @@ class _OptionsState extends State<Options> {
       if (doc.exists) {
         setState(() {
           _userName = doc.get('nombre') ?? "";
-          String rol = doc.get('rol') ?? "participante";
-          _isAdmin = rol == 'administrador';
           _isDarkMode = doc.get('oscuro') ?? false;
+          _isAdminGlobal = doc.get('rol') == 'administrador global';
           // Actualiza el ValueNotifier global con el valor obtenido
           darkModeNotifier.value = _isDarkMode;
           _loading = false;
@@ -221,22 +220,6 @@ class _OptionsState extends State<Options> {
               ),
             ),
             const Divider(),
-            /* // Opción para cambiar el rol a administrador o participante
-            ListTile(
-              title: const Text('Usuario Administrador'),
-              trailing: Checkbox(
-                value: _isAdmin,
-                onChanged: (bool? newValue) async {
-                  if (newValue != null) {
-                    setState(() {
-                      _isAdmin = newValue;
-                    });
-                    await _updateUserRole(_isAdmin);
-                  }
-                },
-              ),
-            ),
-            const Divider(), */
             // Opción para cerrar sesión
             ListTile(
               title: const Text(
@@ -289,6 +272,23 @@ class _OptionsState extends State<Options> {
                 },
               ),
             ),
+            // Opción para finalizar rally, visible solo para administrador global
+            if (_isAdminGlobal)
+              ListTile(
+                title: const Text(
+                  'Finalizar rally',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                trailing: IconButton(
+                  icon: const Icon(Icons.emoji_events, color: Colors.blue),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/endRally');
+                  },
+                ),
+              ),
           ],
         ),
       ),

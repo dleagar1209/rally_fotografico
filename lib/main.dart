@@ -7,6 +7,7 @@ import 'screens/home.dart';
 import 'screens/rally.dart';
 import 'screens/options.dart';
 import 'screens/users.dart';
+import 'screens/endRally.dart';
 
 // Notificador global para el modo oscuro
 ValueNotifier<bool> darkModeNotifier = ValueNotifier(false);
@@ -68,6 +69,7 @@ class MainApp extends StatelessWidget {
             "/options": (context) => const Options(),
             "/users": (context) => const Users(),
             "/imagenes": (context) => const Imagenes(),
+            "/endRally": (context) => const EndRallyScreen(),
           },
         );
       },
