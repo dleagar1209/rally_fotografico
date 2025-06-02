@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'rally.dart'; // Importa la pantalla de Rally
 
 class EndRallyScreen extends StatelessWidget {
   const EndRallyScreen({Key? key}) : super(key: key);
@@ -38,7 +40,10 @@ class EndRallyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Podio Rally Fotográfico')),
+      appBar: AppBar(
+        title: const Text(''), // Sin título
+        automaticallyImplyLeading: false, // Quita la flecha de atrás
+      ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _getTopImages(),
         builder: (context, snapshot) {
@@ -122,6 +127,57 @@ class EndRallyScreen extends StatelessWidget {
             ],
           );
         },
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+            minimumSize: const Size.fromHeight(48),
+          ),
+          onPressed: () async {
+            // Eliminar todas las imágenes de Firestore y Storage
+            final firestore = FirebaseFirestore.instance;
+            final storage = FirebaseStorage.instance;
+            final imagesSnapshot = await firestore.collection('imagenes').get();
+            for (final doc in imagesSnapshot.docs) {
+              final data = doc.data();
+              final imageUrl = data['imagen'] as String?;
+              if (imageUrl != null && imageUrl.contains('/o/')) {
+                try {
+                  final path = Uri.decodeFull(
+                    imageUrl.split('/o/')[1].split('?').first,
+                  );
+                  await storage.ref().child(path).delete();
+                } catch (_) {}
+              }
+              await doc.reference.delete();
+            }
+            // Reiniciar numeroVotos a 3 para todos los usuarios
+            final usersSnapshot = await firestore.collection('users').get();
+            for (final userDoc in usersSnapshot.docs) {
+              await userDoc.reference.update({'numeroVotos': 3});
+            }
+            // Opcional: mostrar confirmación
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Rally finalizado: imágenes eliminadas y votos reiniciados.',
+                  ),
+                ),
+              );
+              // Redirigir a Rally y eliminar el historial de navegación
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const Rally()),
+                (route) => false,
+              );
+            }
+          },
+          child: const Text('Finalizar'),
+        ),
       ),
     );
   }

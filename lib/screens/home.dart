@@ -24,6 +24,7 @@ class Home extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
         actions: [
           ValueListenableBuilder<bool>(
             valueListenable: darkModeNotifier,

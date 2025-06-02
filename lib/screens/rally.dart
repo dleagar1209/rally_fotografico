@@ -146,7 +146,8 @@ class Rally extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Rally Fotográfico'),
+            title: const Text(''),
+            automaticallyImplyLeading: false,
             actions: [
               IconButton(
                 icon: const Icon(Icons.settings),

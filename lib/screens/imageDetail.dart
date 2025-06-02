@@ -59,7 +59,7 @@ class ImageDetailScreen extends StatelessWidget {
             }
             return Scaffold(
               appBar: AppBar(
-                title: const Text("Detalle de Imagen"),
+                title: const Text(""),
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.info_outline),

@@ -42,7 +42,10 @@ class Users extends StatelessWidget {
         final bool isAdminGlobal = currentRol == 'administrador global';
 
         return Scaffold(
-          appBar: AppBar(title: const Text("Lista de Usuarios")),
+          appBar: AppBar(
+            title: const Text(''),
+            automaticallyImplyLeading: false,
+          ),
           body: StreamBuilder<QuerySnapshot>(
             stream:
                 FirebaseFirestore.instance
@@ -246,14 +249,21 @@ class Users extends StatelessWidget {
                                                             // Decrementar número de usuarios en el documento info de la colección rally
                                                             await FirebaseFirestore
                                                                 .instance
-                                                                .collection('rally')
+                                                                .collection(
+                                                                  'rally',
+                                                                )
                                                                 .doc('info')
-                                                                .set({
-                                                                  'NumeroUsuarios':
-                                                                      FieldValue
-                                                                          .increment(
-                                                                              -1),
-                                                                }, SetOptions(merge: true));
+                                                                .set(
+                                                                  {
+                                                                    'NumeroUsuarios':
+                                                                        FieldValue.increment(
+                                                                          -1,
+                                                                        ),
+                                                                  },
+                                                                  SetOptions(
+                                                                    merge: true,
+                                                                  ),
+                                                                );
 
                                                             // Mostrar confirmación
                                                             Navigator.pop(

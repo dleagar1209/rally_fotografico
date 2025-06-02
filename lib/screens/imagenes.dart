@@ -21,7 +21,7 @@ class _ImagenesState extends State<Imagenes> {
     final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Mis Imágenes")),
+      appBar: AppBar(title: const Text(''), automaticallyImplyLeading: false),
       body:
           user == null
               ? const Center(child: Text("Usuario no autenticado"))
