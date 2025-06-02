@@ -20,6 +20,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = darkModeNotifier.value;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -28,21 +29,21 @@ class Home extends StatelessWidget {
         actions: [
           ValueListenableBuilder<bool>(
             valueListenable: darkModeNotifier,
-            builder: (_, isDarkMode, __) {
+            builder: (_, isDark, __) {
               return IconButton(
                 icon: Icon(
-                  isDarkMode ? Icons.nights_stay : Icons.wb_sunny,
-                  color: isDarkMode ? Colors.yellowAccent : Colors.orange,
+                  isDark ? Icons.nights_stay : Icons.wb_sunny,
+                  color: isDark ? Colors.yellowAccent : Colors.orange,
                 ),
                 onPressed: () {
-                  darkModeNotifier.value = !isDarkMode;
+                  darkModeNotifier.value = !isDark;
                 },
               );
             },
           ),
         ],
       ),
-      backgroundColor: const Color(0xFFF2F2F2),
+      backgroundColor: isDarkMode ? Colors.black : const Color(0xFFF2F2F2),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -55,11 +56,13 @@ class Home extends StatelessWidget {
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 15),
-              const Text(
-                'Inicia sesión y empieza a subir imágenes, las imágenes serán puntuadas por otros usuarios. '
-                '¡Únete y empieza a subir imágenes!',
+              Text(
+                'Inicia sesión y empieza a subir imágenes, las imágenes serán puntuadas por otros usuarios. ¡Únete y empieza a subir imágenes!',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16, color: Colors.black54),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: isDarkMode ? Colors.white70 : Colors.black54,
+                ),
               ),
               const SizedBox(height: 30),
               SizedBox(
