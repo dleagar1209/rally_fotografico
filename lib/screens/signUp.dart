@@ -70,6 +70,7 @@ class _SignUpState extends State<SignUp> {
           'rol': rol,
           'oscuro': darkModeNotifier.value,
           'fechaCreacion': FieldValue.serverTimestamp(),
+          'numeroVotos': 3,
         });
 
         // Incrementar NumeroUsuarios en el documento de la colección rally

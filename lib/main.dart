@@ -63,9 +63,9 @@ class MainApp extends StatelessWidget {
             },
           ),
           routes: {
-            '/home': (context) => const Home(),
-            '/rally': (context) => const Rally(),
-            '/options': (context) => const Options(),
+            "/home": (context) => const Home(),
+            "/rally": (context) => const Rally(),
+            "/options": (context) => const Options(),
             "/users": (context) => const Users(),
             "/imagenes": (context) => const Imagenes(),
           },
