@@ -1,3 +1,8 @@
+// Pantalla de podium y finalización del rally fotográfico.
+// Muestra el top 3 de imágenes con sus autores y notas medias.
+// Permite al administrador finalizar el rally, eliminando todas las imágenes y reiniciando los votos de los usuarios.
+// Navega a la pantalla principal de rally tras finalizar.
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';

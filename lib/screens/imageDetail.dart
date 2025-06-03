@@ -1,3 +1,8 @@
+// Pantalla de detalle de una imagen.
+// Muestra la imagen, información del usuario, fecha, estado y permite votar con estrellas si el usuario tiene votos disponibles.
+// Utiliza Firebase Firestore para obtener los datos de la imagen y el usuario.
+// Permite a los usuarios registrados votar por la imagen, actualizando la base de datos en consecuencia.
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';

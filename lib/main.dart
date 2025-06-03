@@ -1,3 +1,7 @@
+// main.dart - Punto de entrada de la aplicación RallyFotografico.
+// Inicializa Firebase, gestiona el modo oscuro global y define la navegación principal y rutas de la app.
+// Determina si mostrar la pantalla de inicio o la principal según el estado de autenticación del usuario.
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';

@@ -1,3 +1,9 @@
+// Pantalla de registro de usuario.
+// Permite crear una cuenta nueva, validando nombre, email y contraseña, y guarda los datos en Firebase.
+// Al registrarse, el usuario es asignado con el rol de "participante" por defecto.
+// La contraseña debe tener al menos 7 caracteres, incluyendo una mayúscula, una minúscula y un carácter especial.
+// Se utiliza Firebase Authentication para la creación de usuarios y Cloud Firestore para el almacenamiento de datos.
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

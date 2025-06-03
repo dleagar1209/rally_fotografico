@@ -1,3 +1,6 @@
+// Pantalla de inicio/bienvenida de la app.
+// Permite acceder al login y registro, y cambiar el modo oscuro.
+
 import 'package:flutter/material.dart';
 import 'login.dart';
 import 'signUp.dart';

@@ -1,3 +1,7 @@
+// Pantalla principal del rally fotográfico.
+// Muestra las imágenes aprobadas (o también por aprobar si es admin), permite navegar a usuarios, imágenes propias y opciones.
+// Permite subir imágenes nuevas y ver detalles de cada imagen.
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';

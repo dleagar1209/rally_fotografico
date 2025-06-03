@@ -1,3 +1,6 @@
+// Pantalla de gestión de usuarios (solo para administradores).
+// Permite ver usuarios, cambiar roles y expulsar usuarios del sistema.
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';

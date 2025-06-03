@@ -1,3 +1,7 @@
+// Pantalla de gestión de imágenes propias del usuario.
+// Permite ver, eliminar y modificar imágenes subidas por el usuario actual.
+// Requiere autenticación de Firebase y acceso a Firestore y Storage.
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

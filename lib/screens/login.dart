@@ -1,3 +1,8 @@
+// Pantalla de inicio de sesión.
+// Permite a los usuarios autenticarse con email y contraseña, mostrando mensajes de error y éxito.
+// Requiere la validación del correo electrónico y la contraseña.
+// Navega a la pantalla de rally en caso de inicio de sesión exitoso.
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
