@@ -80,6 +80,9 @@ class ImageDetailScreen extends StatelessWidget {
                                   Text("Usuario: $nombreUsuario"),
                                   Text("Fecha: $formattedFecha"),
                                   Text("Estado: $displayEstado"),
+                                  Text(
+                                    "Nota media: ${data['notaMedia'] != null ? (data['notaMedia'] as num).toStringAsFixed(2) : '-'}",
+                                  ), // Añadido
                                 ],
                               ),
                             ),
